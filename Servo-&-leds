@@ -1,0 +1,124 @@
+[22:17, 16/04/2023] Oumaima Jaretna: #include <NewPing.h>
+#include <Servo.h>
+
+// Define the pins for the ultrasonic sensors
+const int trig1 = 9;
+const int echo1 = 10;
+const int trig2 = 12;
+const int echo2 = 13;
+
+// Define the pins for the LEDs
+const int LED1 = 3;
+const int LED2 = 5;
+
+// Define the pin for the servo motor
+const int servoPin = 6;
+
+// Define the maximum and minimum angle for the servo motor
+const int maxAngle = 360;
+const int minAngle = 0;
+
+// Define variables to store the distance and angle
+long duration1, duration2;
+int distance1, distance2;
+int angle = minAngle;
+
+// Create objects for the ultrasonic sensors and the servo motor
+NewPing sonar1(trig1, echo1, 200);
+NewPing sonar2(trig2, echo2, 200);
+Servo myservo;
+
+void setup() {
+  // Initialize the pins for the ultrasonic sensors
+…
+[22:27, 16/04/2023] Oumaima Jaretna: akhir wahd khdm
+[22:27, 16/04/2023] Oumaima Jaretna: #include <NewPing.h>
+#include <Servo.h>
+
+// Define the pins for the ultrasonic sensors
+const int trig1 = 9;
+const int echo1 = 10;
+const int trig2 = 12;
+const int echo2 = 13;
+
+// Define the pins for the LEDs
+const int LED1 = 3;
+const int LED2 = 5;
+
+// Define the pin for the servo motor
+const int servoPin = 6;
+
+// Define the maximum and minimum angle for the servo motor
+const int maxAngle = 360;
+const int minAngle = 0;
+
+// Define variables to store the distance and angle
+long duration1, duration2;
+int distance1, distance2;
+int angle = minAngle;
+
+// Create objects for the ultrasonic sensors and the servo motor
+NewPing sonar1(trig1, echo1, 200);
+NewPing sonar2(trig2, echo2, 200);
+Servo myservo;
+
+void setup() {
+  // Initialize the pins for the ultrasonic sensors
+  pinMode(trig1, OUTPUT);
+  pinMode(echo1, INPUT);
+  pinMode(trig2, OUTPUT);
+  pinMode(echo2, INPUT);
+
+  // Initialize the pins for the LEDs
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+
+  // Initialize the pin for the servo motor
+  myservo.attach(servoPin);
+
+  // Initialize the serial port for debugging
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Measure the distance with the first ultrasonic sensor
+  distance1 = sonar1.ping_cm();
+  Serial.print("Distance 1: ");
+  Serial.print(distance1);
+  Serial.println(" cm");
+
+  // Control the LEDs with the first ultrasonic sensor
+  if (distance1 <= 7) {
+    digitalWrite(LED1, HIGH);
+  } else {
+    digitalWrite(LED1, LOW);
+  }
+  if (distance1 > 8) {
+    digitalWrite(LED2, HIGH);
+  } else {
+    digitalWrite(LED2, LOW);
+  }
+
+  // Measure the distance with the second ultrasonic sensor
+  distance2 = sonar2.ping_cm();
+  Serial.print("Distance 2: ");
+  Serial.print(distance2);
+  Serial.println(" cm");
+
+  // Control the servo motor with the second ultrasonic sensor
+  if (distance2 <= 5) {
+    myservo.write(360); // set the angle to 90 degrees
+    delay(5000); // wait for 5 seconds
+    myservo.write(0); // set the angle back to 0 degrees to close the barrier
+  }
+  myservo.write(angle);
+  delay(15); // wait for the servo to move
+
+  // Print the distance and angle for debugging
+  Serial.print("Angle: ");
+  Serial.println(angle);
+  Serial.println();
+
+  // Wait for a short period before taking the next measurement
+  delay(100);
+}
