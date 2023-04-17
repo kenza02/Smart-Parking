@@ -91,5 +91,5 @@ void loop() {
   Serial.println();
 
   // Wait for a short period before taking the next measurement
-  delay(100);
+  delay(1000);
 }
