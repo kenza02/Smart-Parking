@@ -1,0 +1,39 @@
+import serial
+import time
+import pyrebase
+
+# Firebase configuration
+config = {
+   "apiKey": "AIzaSyAfzkHwv1dNU03ifij_Kz1e2yhMqryV-uw",
+  "authDomain": "smart-parking-40f00.firebaseapp.com",
+  "databaseURL": "https://smart-parking-40f00-default-rtdb.firebaseio.com",
+  "projectId": "smart-parking-40f00",
+  "storageBucket": "smart-parking-40f00.appspot.com",
+  "messagingSenderId": "798499748890",
+  "appId": "1:798499748890:web:b4e3d22724e5a1151fa5a3"
+}
+
+# Initialize Firebase
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
+
+# Define serial port and baud rate
+ser = serial.Serial('/dev/ttyACM0', 9600)
+
+# Define the last sent value
+last_sent_value = ""
+
+while True:
+    # Read data from Arduino
+    data = ser.readline().strip().decode('utf-8')
+
+    # Extract the value from the data string
+    value = data.split(' ')[0]
+
+    # Only write data to Firebase if it's different from the last sent value
+    if value != last_sent_value and (value == "occupied" or value == "free"):
+        db.child("parking_status").set(value)
+        last_sent_value = value
+
+    # Wait for a short period before reading the next data
+    time.sleep(0.05)
